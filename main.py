@@ -58,16 +58,14 @@ piece_image = None
 
 for request in network_requests:
     if "cap_union_new_getcapbysig?img_index=1" in request["name"]:
-        print("FOUND background")
+        print("Found background")
         background_imgage = request["name"]
     elif "cap_union_new_getcapbysig?img_index=0" in request["name"]:
         print("Found piece")
         piece_image = request["name"]
         break
 
-print("found nothing")
-
-distance = 20
+print("Finding distance...")
 if background_imgage and piece_image:
     response_back = requests.get(background_imgage)
     response_piece = requests.get(piece_image)
@@ -80,29 +78,22 @@ if background_imgage and piece_image:
     piece_img_cropped.save("piece_cropped.png", quality=95)
     solver = PuzleSolver("background.png", "piece_cropped.png")
     distance = solver.get_position()
-    print(solver.get_position())
+    print("Distance:", solver.get_position())
 
 
 # Wait for the slider to load inside the second iframe
 slider = wait.until(
-    EC.presence_of_element_located(
-        (By.CSS_SELECTOR, "div[aria-label='Проведите, чтобы собрать пазл']")
-    )
+    EC.presence_of_element_located((By.CSS_SELECTOR, "img[alt='slider']"))
 )
 
-# Calculate the distance to drag the slider
-
-
-# container_width = slider.size["width"]
-slider_width = slider.size["width"]
 
 # Perform the sliding action
 actions = webdriver.ActionChains(driver)
-actions.click_and_hold(slider).move_by_offset(distance, 0).release().perform()
-
+movable_distance = int(distance / 2.7)
+actions.click_and_hold(slider).move_by_offset(movable_distance, 0).release().perform()
 
 # Wait for verification or further actions
-time.sleep(5)
+time.sleep(10)
 
 # Close the browser
 driver.quit()
