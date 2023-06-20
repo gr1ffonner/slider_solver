@@ -1,3 +1,4 @@
+import requests
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
@@ -5,6 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from solver import PuzleSolver
 
 # Initialize ChromeDriver
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -47,6 +49,33 @@ iframe1 = wait.until(
 driver.switch_to.frame(iframe1)
 print("switched to the frame with captcha")
 
+time.sleep(10)
+network_requests = driver.execute_script("return window.performance.getEntries()")
+
+background_imgage = None
+piece_image = None
+
+for request in network_requests:
+    if "cap_union_new_getcapbysig?img_index=1" in request["name"]:
+        print('FOUND background')
+        background_imgage = request["name"]
+    elif "cap_union_new_getcapbysig?img_index=0" in request["name"]:
+        print('Found piece')
+        piece_image = request["name"]
+        break
+
+print('found nothing')
+
+if background_imgage and piece_image:
+    response_back = requests.get(background_imgage)
+    response_piece = requests.get(piece_image)
+    with open("background.jpg", "wb") as file:
+        file.write(response_back.content)
+    with open("piece.jpg", "wb") as file:
+        file.write(response_piece.content)
+    solver = PuzleSolver("background.jpg", "piece.jpg")
+    print(solver.get_position())
+
 
 # Wait for the slider to load inside the second iframe
 slider = wait.until(
@@ -56,6 +85,10 @@ slider = wait.until(
 )
 
 # Calculate the distance to drag the slider
+
+
+
+
 # container_width = slider.size["width"]
 slider_width = slider.size["width"]
 # distance = container_width - slider_width
