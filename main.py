@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from solver import PuzleSolver
+from PIL import Image
 
 # Initialize ChromeDriver
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -57,23 +58,28 @@ piece_image = None
 
 for request in network_requests:
     if "cap_union_new_getcapbysig?img_index=1" in request["name"]:
-        print('FOUND background')
+        print("FOUND background")
         background_imgage = request["name"]
     elif "cap_union_new_getcapbysig?img_index=0" in request["name"]:
-        print('Found piece')
+        print("Found piece")
         piece_image = request["name"]
         break
 
-print('found nothing')
+print("found nothing")
 
+distance = 20
 if background_imgage and piece_image:
     response_back = requests.get(background_imgage)
     response_piece = requests.get(piece_image)
-    with open("background.jpg", "wb") as file:
+    with open("background.png", "wb") as file:
         file.write(response_back.content)
-    with open("piece.jpg", "wb") as file:
+    with open("piece.png", "wb") as file:
         file.write(response_piece.content)
-    solver = PuzleSolver("background.jpg", "piece.jpg")
+    piece_img = Image.open("piece.png")
+    piece_img_cropped = piece_img.crop((155, 504, 245, 594))
+    piece_img_cropped.save("piece_cropped.png", quality=95)
+    solver = PuzleSolver("background.png", "piece_cropped.png")
+    distance = solver.get_position()
     print(solver.get_position())
 
 
@@ -87,15 +93,12 @@ slider = wait.until(
 # Calculate the distance to drag the slider
 
 
-
-
 # container_width = slider.size["width"]
 slider_width = slider.size["width"]
-# distance = container_width - slider_width
 
 # Perform the sliding action
 actions = webdriver.ActionChains(driver)
-actions.click_and_hold(slider).move_by_offset(10, 0).release().perform()
+actions.click_and_hold(slider).move_by_offset(distance, 0).release().perform()
 
 
 # Wait for verification or further actions
@@ -104,9 +107,3 @@ time.sleep(5)
 # Close the browser
 driver.quit()
 print("Browser closed")
-
-
-
-# Класс слайдера tc-fg-item tc-slider-normal
-
-# Класс пазла(не пустого) tc-fg-item
