@@ -71,3 +71,9 @@ time.sleep(5)
 # Close the browser
 driver.quit()
 print("Browser closed")
+
+
+
+# Класс слайдера tc-fg-item tc-slider-normal
+
+# Класс пазла(не пустого) tc-fg-item
