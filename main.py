@@ -30,7 +30,6 @@ def solve_captcha():
     email_input = driver.find_element(By.XPATH, "//input[@id='mail']")
     number_input = driver.find_element(By.XPATH, "//input[@id='applyid1']")
 
-
     fio_input.send_keys(fio)
     phone_input.send_keys(phone)
     email_input.send_keys(email)
@@ -47,19 +46,18 @@ def solve_captcha():
     # Wait for the first iframe to load
     wait = WebDriverWait(driver, 10)
     iframe1 = wait.until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "iframe[id='tcaptcha_iframe_dy']"))
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "iframe[id='tcaptcha_iframe_dy']")
+        )
     )
 
     driver.switch_to.frame(iframe1)
     print("switched to the frame with captcha")
 
-
     time.sleep(3)
-
 
     background_imgage = None
     piece_image = None
-
 
     network_requests = driver.execute_script("return window.performance.getEntries()")
     for request in network_requests:
@@ -70,7 +68,6 @@ def solve_captcha():
             print("Found piece")
             piece_image = request["name"]
             break
-
 
     distance = 0
     try:
@@ -87,9 +84,7 @@ def solve_captcha():
         print("Ошибка при решении капчи:", str(e))
         print("Капча не решаема")
 
-
     print(type(distance))
-
 
     slider = wait.until(
         EC.presence_of_element_located((By.CSS_SELECTOR, "img[alt='slider']"))
@@ -98,7 +93,7 @@ def solve_captcha():
     # Perform the sliding action
     actions = webdriver.ActionChains(driver)
     actions.click_and_hold(slider).perform()
-    actions.move_by_offset(distance,0).perform()
+    actions.move_by_offset(distance, 0).perform()
     actions.release(slider).perform()
     # Wait for verification or further actions
 
@@ -107,3 +102,6 @@ def solve_captcha():
     # Close the browser
     driver.quit()
     print("Browser closed")
+
+
+solve_captcha()
