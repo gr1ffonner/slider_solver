@@ -65,9 +65,6 @@ def solve_captcha(driver):
 
         time.sleep(3)
 
-        background_image = None
-        piece_image = None
-
         network_requests = driver.execute_script(
             "return window.performance.getEntries()"
         )
@@ -80,7 +77,6 @@ def solve_captcha(driver):
                 piece_image = request["name"]
                 break
 
-        distance = 0
         try:
             if background_image and piece_image:
                 response_back = requests.get(background_image)
@@ -98,7 +94,6 @@ def solve_captcha(driver):
             EC.presence_of_element_located((By.CSS_SELECTOR, "img[alt='slider']"))
         )
 
-        # Perform the sliding action
         actions = webdriver.ActionChains(driver)
         actions.click_and_hold(slider).perform()
         actions.move_by_offset(distance, 0).perform()
