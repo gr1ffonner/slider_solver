@@ -41,8 +41,6 @@ def get_points(background_path):
     center_x = x + w // 2
     center_y = y + h // 2
 
-    # Вывод координат центра
-    print("Координаты центра пазла: ({}, {})".format(center_x, center_y))
     mask = np.zeros_like(gray)
 
     # Заливка контуров на маске
