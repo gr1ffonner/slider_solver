@@ -17,7 +17,7 @@ def get_points(background_path):
         blurred, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2
     )
 
-    contours, hierarchy = cv2.findContours(
+    _, contours, hierarchy = cv2.findContours(
         thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
 

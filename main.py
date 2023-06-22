@@ -111,7 +111,7 @@ def solve_captcha(driver):
         try:
             wait.until(EC.url_changes(driver.current_url))
             print("Page reloaded successfully")
-            return True
+            continue
         except TimeoutException:
             print("Page did not reload within the specified timeout.")
             print("Reloading the page...")
