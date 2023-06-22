@@ -1,11 +1,11 @@
 import requests
+import time
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from trueSolver import get_points
 from selenium.common.exceptions import TimeoutException
 
@@ -15,6 +15,7 @@ def load_website():
     driver.maximize_window()
 
     url = "https://avas.mfa.gov.cn/qzyyCoCommonController.do?yypersoninfo&status=continue&1686142874790&locale=ru_RU"
+
     driver.get(url)
     print("Браузер загружен")
     return driver, url
@@ -35,7 +36,7 @@ def enter_form_data(driver):
     phone_input.send_keys(phone)
     email_input.send_keys(email)
     number_input.send_keys(number)
-    print("Form data entered successfully")
+    print("Данные вставлены")
 
 
 def submit_form(driver):
@@ -57,7 +58,6 @@ def solve_captcha(driver):
             )
         except TimeoutException:
             print("Фрейм с капчей не был загружен в установленное время")
-            print("Перезагружаем страницу")
             return False
 
         driver.switch_to.frame(iframe1)
@@ -86,13 +86,11 @@ def solve_captcha(driver):
                 response_back = requests.get(background_image)
                 with open("background.png", "wb") as file:
                     file.write(response_back.content)
-                distance = int(get_points("background.png") / 2.6) + 5
+                distance = int(get_points("background.png") / 2.6) 
                 print(f"Нужно передвинуть на {distance} пикселей")
-                # Additional code that uses the distance value
             else:
                 raise ValueError("Отсутствуют ссылки на изображения")
-        except Exception as e:
-            print("Ошибка при решении капчи:", str(e))
+        except Exception:
             print("Капча не решаема")
             return False
 
@@ -106,41 +104,19 @@ def solve_captcha(driver):
         actions.move_by_offset(distance, 0).perform()
         actions.release(slider).perform()
 
-        try:
-            wait.until(EC.url_changes(driver.current_url))
-            print("Страница успешно перезагружена")
-            continue
-        except TimeoutException:
-            print("Фрейм с капчей не был загружен в установленное время")
-            print("Перезагружаем страницу")
-
-        # time.sleep(3)
-
-
 def main():
-    # # Initialize ChromeDriver
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    # driver.maximize_window()
-    #
-    # # Load the website
-    # url = "https://avas.mfa.gov.cn/qzyyCoCommonController.do?yypersoninfo&status=continue&1686142874790&locale=ru_RU"
-    # driver.get(url)
-    # print("Браузер загружен")
-
     driver, _ = load_website()
 
     while True:
         enter_form_data(driver)
         submit_form(driver)
         if solve_captcha(driver):
-            break
-        # Reload the page
+            if driver.current_url == "https://avas.mfa.gov.cn/qzyyCoCommonController.do?yyindex&locale=zh_CN":
+                driver.quit()
+                print("Закрываем браузер")
+                break
         print("Перезагружаем страницу")
         driver.refresh()
-
-    # Close the browser
-    driver.quit()
-    print("Закрываем браузер")
 
 
 if __name__ == "__main__":
