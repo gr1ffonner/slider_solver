@@ -9,12 +9,12 @@ https://github.com/gr1ffonner/slider-solver/assets/112549266/125d0c8b-8011-4200-
 ## Description
 
 This project involves developing a script that can automatically solve slider-captcha challenges. It utilizes the Selenium and OpenCV libraries to interact with the browser and process captcha images.
+
 ## Tech Stack
-
-The project is built on the following technologies:
-
-Selenium: A powerful library for browser automation, enabling interaction with web elements.
-OpenCV: A popular computer vision library used for image processing and analysis.
+   The project is built on the following technologies:
+   
+  - Selenium: A powerful library for browser automation, enabling interaction with web elements.
+  - OpenCV: A popular computer vision library used for image processing and analysis.
 
 ## Installation
 
