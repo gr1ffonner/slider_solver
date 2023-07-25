@@ -29,6 +29,7 @@ To use the Cigarette Detector, follow these installation steps:
    
    ```bash
    python -m venv venv
+   source venv/bin/activate
 3. Install dependencies
    
    ```bash
