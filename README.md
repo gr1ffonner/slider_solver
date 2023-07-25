@@ -23,8 +23,8 @@ To use the Cigarette Detector, follow these installation steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/gr1ffonner/slider-solver.git
-   cd slider-solver
+   git clone https://github.com/gr1ffonner/slider_solver.git
+   cd slider_solver
 2. Activate venv
    
    ```bash
